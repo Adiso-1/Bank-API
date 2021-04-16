@@ -48,21 +48,19 @@ const deleteMovie = async (id) => {
 
 //* deposit cash
 const depositCash = async (id, data) => {
-	console.log(id);
-	console.log(data);
-	// try {
-	// 	const users = await loadUsers();
-	// 	const editUsers = users.map((el) => {
-	// 		if (el.id === id) {
-	// 			return { ...el, ...data };
-	// 		} else {
-	// 			return el;
-	// 		}
-	// 	});
-	// 	saveUsers(editUsers);
-	// } catch (error) {
-	// 	console.log(error);
-	// }
+	try {
+		const users = await loadUsers();
+		const editUsers = users.map((el) => {
+			if (el.id === id) {
+				return { ...el, ...data };
+			} else {
+				return el;
+			}
+		});
+		saveUsers(editUsers);
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 //! LOAD

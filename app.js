@@ -35,8 +35,12 @@ app.post('/api/users', (req, res) => {
 app.put('/api/users/:id', (req, res) => {
 	const { id } = req.params;
 	const data = req.query;
-	depositCash(id, data);
-	res.status(200).send('cash updated successfully');
+	if (data.cash) {
+		depositCash(id, data);
+		res.status(200).send('cash updated successfully');
+	} else {
+		res.status(400).send('not a valid params, check again');
+	}
 });
 
 // delete existing movie by id
