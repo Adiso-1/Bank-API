@@ -7,6 +7,7 @@ const {
 	getUserId,
 	depositCash,
 	updateCredit,
+	withdraw,
 } = require('./utils');
 
 const PORT = 3000;
@@ -51,6 +52,18 @@ app.put('/api/users/credit/:id', (req, res) => {
 	if (data.credit && data.credit > 0) {
 		depositCash(id, data);
 		res.status(200).send('credit updated successfully');
+	} else {
+		res.status(400).send('not a valid params, check again');
+	}
+});
+
+// withdraw
+app.put('/api/users/withdraw/:id', (req, res) => {
+	const { id } = req.params;
+	const data = req.query;
+	if (data.cash && data.cash > 0) {
+		withdraw(id, data);
+		res.status(200).send('withdraw completed');
 	} else {
 		res.status(400).send('not a valid params, check again');
 	}

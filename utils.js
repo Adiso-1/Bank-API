@@ -1,3 +1,4 @@
+const { error } = require('console');
 const fs = require('fs');
 const util = require('util');
 
@@ -80,6 +81,32 @@ const updateCredit = async (id, data) => {
 	}
 };
 
+//* withdraw
+const withdraw = async (id, data) => {
+	try {
+		const users = await loadUsers();
+		const editUsers = users.map((el) => {
+			if (el.id === id) {
+				if (el.cash - data.cash >= -el.credit) {
+					data.cash = (el.cash - data.cash).toString();
+					return { ...el, ...data };
+				} else {
+					throw error(
+						`you dont have enough money, max withdraw: ${
+							Number(el.credit) + Number(el.cash)
+						}`
+					);
+				}
+			} else {
+				return el;
+			}
+		});
+		saveUsers(editUsers);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 //! LOAD
 const loadUsers = async () => {
 	try {
@@ -107,4 +134,5 @@ module.exports = {
 	deleteUser,
 	depositCash,
 	updateCredit,
+	withdraw,
 };
