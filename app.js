@@ -3,9 +3,10 @@ const app = express();
 const {
 	getUsers,
 	createUser,
-	deleteMovie,
+	deleteUser,
 	getUserId,
 	depositCash,
+	updateCredit,
 } = require('./utils');
 
 const PORT = 3000;
@@ -31,23 +32,35 @@ app.post('/api/users', (req, res) => {
 	res.status(201).send('User uploaded successfully');
 });
 
-// depositing cash to user by id and amount of cash
-app.put('/api/users/:id', (req, res) => {
+//! deposit
+app.put('/api/users/deposit/:id', (req, res) => {
 	const { id } = req.params;
 	const data = req.query;
 	if (data.cash) {
-		depositCash(id, data);
+		updateCredit(id, data);
 		res.status(200).send('cash updated successfully');
 	} else {
 		res.status(400).send('not a valid params, check again');
 	}
 });
 
-// delete existing movie by id
-app.delete('/api/movies/:id', (req, res) => {
+//! credit
+app.put('/api/users/credit/:id', (req, res) => {
 	const { id } = req.params;
-	deleteMovie(id);
-	res.status(200).send('Movie deleted successfully');
+	const data = req.query;
+	if (data.credit && data.credit > 0) {
+		depositCash(id, data);
+		res.status(200).send('credit updated successfully');
+	} else {
+		res.status(400).send('not a valid params, check again');
+	}
+});
+
+//! delete existing user by id
+app.delete('/api/users/:id', (req, res) => {
+	const { id } = req.params;
+	deleteUser(id);
+	res.status(200).send('User deleted successfully');
 });
 
 app.listen(PORT, () => {

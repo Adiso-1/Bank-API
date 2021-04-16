@@ -35,12 +35,12 @@ const createUser = async (user) => {
 };
 
 //* delete
-const deleteMovie = async (id) => {
+const deleteUser = async (id) => {
 	try {
-		const movies = await loadUsers();
-		const newMovies = movies.filter((el) => el.id !== id);
-		saveMovies(newMovies);
-		console.log('Movie Successfully deleted');
+		const users = await loadUsers();
+		const newUsers = users.filter((el) => el.id !== id);
+		saveUsers(newUsers);
+		console.log('user Successfully deleted');
 	} catch (error) {
 		console.log(error);
 	}
@@ -48,6 +48,23 @@ const deleteMovie = async (id) => {
 
 //* deposit cash
 const depositCash = async (id, data) => {
+	try {
+		const users = await loadUsers();
+		const editUsers = users.map((el) => {
+			if (el.id === id) {
+				return { ...el, ...data };
+			} else {
+				return el;
+			}
+		});
+		saveUsers(editUsers);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+//* update credit
+const updateCredit = async (id, data) => {
 	try {
 		const users = await loadUsers();
 		const editUsers = users.map((el) => {
@@ -87,6 +104,7 @@ module.exports = {
 	getUsers,
 	getUserId,
 	createUser,
-	deleteMovie,
+	deleteUser,
 	depositCash,
+	updateCredit,
 };
