@@ -53,6 +53,7 @@ const depositCash = async (id, data) => {
 		const users = await loadUsers();
 		const editUsers = users.map((el) => {
 			if (el.id === id) {
+				data.cash = (Number(el.cash) + Number(data.cash)).toString();
 				return { ...el, ...data };
 			} else {
 				return el;
@@ -81,7 +82,7 @@ const updateCredit = async (id, data) => {
 	}
 };
 
-//* withdraw
+//! withdraw
 const withdraw = async (id, data) => {
 	try {
 		const users = await loadUsers();
@@ -102,6 +103,28 @@ const withdraw = async (id, data) => {
 			}
 		});
 		saveUsers(editUsers);
+		return 'Withdrawd';
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// transfer
+const transfer = async (data) => {
+	const { fromId, toId, cash } = data;
+	try {
+		const users = await loadUsers();
+		users.map(async (el) => {
+			if (el.id === fromId) {
+				const withdrawSucceed = await withdraw(fromId, {
+					cash: cash.toString(),
+				});
+				if (withdrawSucceed) {
+					depositCash(toId, { cash: cash.toString() });
+				}
+			}
+			return console.log('transfer failed');
+		});
 	} catch (error) {
 		console.log(error);
 	}
@@ -135,4 +158,5 @@ module.exports = {
 	depositCash,
 	updateCredit,
 	withdraw,
+	transfer,
 };

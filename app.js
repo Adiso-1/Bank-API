@@ -8,6 +8,7 @@ const {
 	depositCash,
 	updateCredit,
 	withdraw,
+	transfer,
 } = require('./utils');
 
 const PORT = 3000;
@@ -37,8 +38,8 @@ app.post('/api/users', (req, res) => {
 app.put('/api/users/deposit/:id', (req, res) => {
 	const { id } = req.params;
 	const data = req.query;
-	if (data.cash) {
-		updateCredit(id, data);
+	if (data.cash && data.cash > 0) {
+		depositCash(id, data);
 		res.status(200).send('cash updated successfully');
 	} else {
 		res.status(400).send('not a valid params, check again');
@@ -50,20 +51,32 @@ app.put('/api/users/credit/:id', (req, res) => {
 	const { id } = req.params;
 	const data = req.query;
 	if (data.credit && data.credit > 0) {
-		depositCash(id, data);
+		updateCredit(id, data);
 		res.status(200).send('credit updated successfully');
 	} else {
 		res.status(400).send('not a valid params, check again');
 	}
 });
 
-// withdraw
+//! withdraw
 app.put('/api/users/withdraw/:id', (req, res) => {
 	const { id } = req.params;
 	const data = req.query;
 	if (data.cash && data.cash > 0) {
 		withdraw(id, data);
 		res.status(200).send('withdraw completed');
+	} else {
+		res.status(400).send('not a valid params, check again');
+	}
+});
+
+// transfer
+app.put('/api/users/transfer/', (req, res) => {
+	const { fromId, toId, cash } = req.query;
+	const data = req.query;
+	if (fromId && toId && cash && cash > 0) {
+		transfer(data);
+		res.status(200).send('transfer completed');
 	} else {
 		res.status(400).send('not a valid params, check again');
 	}
