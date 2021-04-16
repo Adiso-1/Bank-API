@@ -5,7 +5,7 @@ const util = require('util');
 const readFileContent = util.promisify(fs.readFile);
 const path = __dirname + '/db/users.json';
 
-//* read
+//! read
 const getUsers = () => {
 	try {
 		return loadUsers();
@@ -24,7 +24,20 @@ const getUserId = async (id) => {
 	}
 };
 
-//* create
+const getUserByCash = async (cash) => {
+	try {
+		const users = await loadUsers();
+		const usersAboveCash = users.filter((el) => {
+			console.log(el.cash, cash);
+			return Number(el.cash) > Number(cash);
+		});
+		return usersAboveCash;
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+//! create
 const createUser = async (user) => {
 	try {
 		const users = await loadUsers();
@@ -35,7 +48,7 @@ const createUser = async (user) => {
 	}
 };
 
-//* delete
+//! delete
 const deleteUser = async (id) => {
 	try {
 		const users = await loadUsers();
@@ -47,7 +60,7 @@ const deleteUser = async (id) => {
 	}
 };
 
-//* deposit cash
+//! deposit cash
 const depositCash = async (id, data) => {
 	try {
 		const users = await loadUsers();
@@ -65,7 +78,7 @@ const depositCash = async (id, data) => {
 	}
 };
 
-//* update credit
+//! update credit
 const updateCredit = async (id, data) => {
 	try {
 		const users = await loadUsers();
@@ -109,7 +122,7 @@ const withdraw = async (id, data) => {
 	}
 };
 
-// transfer
+//! transfer
 const transfer = async (data) => {
 	const { fromId, toId, cash } = data;
 	try {
@@ -123,7 +136,6 @@ const transfer = async (data) => {
 					depositCash(toId, { cash: cash.toString() });
 				}
 			}
-			return console.log('transfer failed');
 		});
 	} catch (error) {
 		console.log(error);
@@ -137,7 +149,7 @@ const loadUsers = async () => {
 		const dataJSON = dataBuffer.toString();
 		return JSON.parse(dataJSON);
 	} catch (error) {
-		return [];
+		console.log(error);
 	}
 };
 
@@ -146,7 +158,6 @@ const saveUsers = (users) => {
 	const dataJSON = JSON.stringify(users);
 	fs.writeFile(path, dataJSON, (err) => {
 		if (err) throw err;
-		console.log('the files saved');
 	});
 };
 
@@ -159,4 +170,5 @@ module.exports = {
 	updateCredit,
 	withdraw,
 	transfer,
+	getUserByCash,
 };

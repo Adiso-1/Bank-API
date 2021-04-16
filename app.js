@@ -9,6 +9,7 @@ const {
 	updateCredit,
 	withdraw,
 	transfer,
+	getUserByCash,
 } = require('./utils');
 
 const PORT = 3000;
@@ -26,6 +27,14 @@ app.get('/api/users/:id', async (req, res) => {
 	const { id } = req.params;
 	const user = await getUserId(id);
 	res.status(200).send(user);
+});
+
+//! get user by min cash
+app.get('/api/users/mincash/1', async (req, res) => {
+	const { cash } = req.query;
+	const users = await getUserByCash(cash);
+	console.log(users);
+	res.status(200).send(users);
 });
 
 //! add user
