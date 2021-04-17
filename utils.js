@@ -1,4 +1,3 @@
-const { error } = require('console');
 const fs = require('fs');
 const util = require('util');
 
@@ -105,7 +104,7 @@ const withdraw = async (id, data) => {
 					data.cash = (el.cash - data.cash).toString();
 					return { ...el, ...data };
 				} else {
-					throw error(
+					throw new Error(
 						`you dont have enough money, max withdraw: ${
 							Number(el.credit) + Number(el.cash)
 						}`
@@ -116,7 +115,7 @@ const withdraw = async (id, data) => {
 			}
 		});
 		saveUsers(editUsers);
-		return 'Withdrawd';
+		return 'success';
 	} catch (error) {
 		console.log(error);
 	}
@@ -129,10 +128,9 @@ const transfer = async (data) => {
 		const users = await loadUsers();
 		users.map(async (el) => {
 			if (el.id === fromId) {
-				const withdrawSucceed = await withdraw(fromId, {
-					cash: cash.toString(),
-				});
-				if (withdrawSucceed) {
+				const response = await withdraw(fromId, { cash: cash.toString() });
+				if (response) {
+					console.log('Transfer succeed!');
 					depositCash(toId, { cash: cash.toString() });
 				}
 			}
