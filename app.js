@@ -33,7 +33,6 @@ app.get('/api/users/:id', async (req, res) => {
 app.get('/api/users/mincash/1', async (req, res) => {
 	const { cash } = req.query;
 	const users = await getUserByCash(cash);
-	console.log(users);
 	res.status(200).send(users);
 });
 
@@ -81,9 +80,9 @@ app.put('/api/users/withdraw/:id', (req, res) => {
 
 //! transfer
 app.put('/api/users/transfer/', (req, res) => {
-	const { fromId, toId, cash } = req.query;
+	const { cash } = req.query;
 	const data = req.query;
-	if (fromId && toId && cash && cash > 0) {
+	if (cash && cash > 0) {
 		transfer(data);
 		res.status(200).send('transfer completed');
 	} else {

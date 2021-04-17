@@ -27,8 +27,7 @@ const getUserByCash = async (cash) => {
 	try {
 		const users = await loadUsers();
 		const usersAboveCash = users.filter((el) => {
-			console.log(el.cash, cash);
-			return Number(el.cash) > Number(cash);
+			return Number(el.cash) >= Number(cash);
 		});
 		return usersAboveCash;
 	} catch (err) {
@@ -115,6 +114,7 @@ const withdraw = async (id, data) => {
 			}
 		});
 		saveUsers(editUsers);
+		//* make a response for the transfer method *//
 		return 'success';
 	} catch (error) {
 		console.log(error);
@@ -126,6 +126,11 @@ const transfer = async (data) => {
 	const { fromId, toId, cash } = data;
 	try {
 		const users = await loadUsers();
+		const isToId = users.find((el) => el.id === toId);
+		const isfromId = users.find((el) => el.id === fromId);
+		if (!isfromId) throw new Error('Transfer user is not exist');
+		if (!isToId) throw new Error('Reciever is not exist');
+		// try to make the transfer
 		users.map(async (el) => {
 			if (el.id === fromId) {
 				const response = await withdraw(fromId, { cash: cash.toString() });
